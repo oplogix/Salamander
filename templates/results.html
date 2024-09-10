@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE Results</title>
+    <style>
+        .cve-box {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px;
+            display: inline-block;
+            width: calc(33% - 32px);
+            vertical-align: top;
+        }
+        .high { background-color: #f8d7da; border-color: #f5c6cb; }
+        .medium { background-color: #fff3cd; border-color: #ffeeba; }
+        .low { background-color: #d4edda; border-color: #c3e6cb; }
+        .cve-id { font-weight: bold; }
+        .impact-score { font-size: 1.2em; margin-top: 8px; }
+        .date { font-size: 0.9em; color: #555; }
+    </style>
+</head>
+<body>
+    <h1>CVE Results for "{{ keywords }}"</h1>
+    {% if cves %}
+        <div>
+            {% for cve in cves %}
+                {% if cve.impact_score >= 7 %}
+                    <div class="cve-box high">
+                {% elif cve.impact_score >= 4 %}
+                    <div class="cve-box medium">
+                {% else %}
+                    <div class="cve-box low">
+                {% endif %}
+                    <div class="cve-id">CVE ID: {{ cve.id }}</div>
+                    <div class="impact-score">Impact Score: {{ cve.impact_score }}</div>
+                    <div class="date">Published: {{ cve.published }}</div>
+                    <div class="date">Last Modified: {{ cve.last_modified }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No applicable CVEs found.</p>
+    {% endif %}
+    <a href="/">Back to search</a>
+</body>
+</html>
