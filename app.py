@@ -68,15 +68,20 @@ def software_check(software_list, cve_data):
             published = cve.get('published', 'N/A')
             last_modified = cve.get('lastModified', 'N/A')
             impact_score = get_impact_score(cve)
-            
+
+            # Fetch the first description's value from the descriptions array
+            description = cve.get('descriptions', [{}])[0].get('value', 'No description available')
+
             applicable_cves.append({
                 'id': cve_id,
                 'published': published,
                 'last_modified': last_modified,
-                'impact_score': impact_score
+                'impact_score': impact_score,
+                'description': description  # Correctly pulled description
             })
 
     return applicable_cves
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
