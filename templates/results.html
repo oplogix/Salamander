@@ -13,6 +13,7 @@
             display: inline-block;
             width: calc(33% - 32px);
             vertical-align: top;
+            cursor: pointer;
         }
         .high { background-color: #f8d7da; border-color: #f5c6cb; }
         .medium { background-color: #fff3cd; border-color: #ffeeba; }
@@ -20,7 +21,16 @@
         .cve-id { font-weight: bold; }
         .impact-score { font-size: 1.2em; margin-top: 8px; }
         .date { font-size: 0.9em; color: #555; }
+        .description { display: none; margin-top: 10px; }
+        .cve-box.active .description { display: block; }
+        .link-to-nist { font-size: 0.9em; color: #007bff; }
     </style>
+    <script>
+        function toggleDescription(cveId) {
+            const box = document.getElementById('cve-box-' + cveId);
+            box.classList.toggle('active');
+        }
+    </script>
 </head>
 <body>
     <h1>CVE Results for "{{ keywords }}"</h1>
@@ -28,16 +38,22 @@
         <div>
             {% for cve in cves %}
                 {% if cve.impact_score >= 7 %}
-                    <div class="cve-box high">
+                    <div id="cve-box-{{ cve.id }}" class="cve-box high" onclick="toggleDescription('{{ cve.id }}')">
                 {% elif cve.impact_score >= 4 %}
-                    <div class="cve-box medium">
+                    <div id="cve-box-{{ cve.id }}" class="cve-box medium" onclick="toggleDescription('{{ cve.id }}')">
                 {% else %}
-                    <div class="cve-box low">
+                    <div id="cve-box-{{ cve.id }}" class="cve-box low" onclick="toggleDescription('{{ cve.id }}')">
                 {% endif %}
                     <div class="cve-id">CVE ID: {{ cve.id }}</div>
                     <div class="impact-score">Impact Score: {{ cve.impact_score }}</div>
                     <div class="date">Published: {{ cve.published }}</div>
                     <div class="date">Last Modified: {{ cve.last_modified }}</div>
+                    
+                    <!-- Hidden description and link to NIST -->
+                    <div class="description">
+                        <p>{{ cve.description }}</p>
+                        <a href="https://nvd.nist.gov/vuln/detail/{{ cve.id }}" class="link-to-nist" target="_blank">View on NIST</a>
+                    </div>
                 </div>
             {% endfor %}
         </div>
